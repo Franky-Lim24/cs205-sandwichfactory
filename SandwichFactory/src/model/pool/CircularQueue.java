@@ -2,9 +2,9 @@ package model.pool;
 
 public class CircularQueue {
     private volatile Object[] queue;
-    private int head;
-    private int tail;
-    private int size;
+    private volatile int head;
+    private volatile int tail;
+    private volatile int size;
 
     public CircularQueue(int capacity) {
         queue = new Object[capacity];
@@ -13,11 +13,11 @@ public class CircularQueue {
         size = 0;
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return size == 0;
     }
 
-    public boolean isFull() {
+    public synchronized boolean isFull() {
         return size == queue.length;
     }
 

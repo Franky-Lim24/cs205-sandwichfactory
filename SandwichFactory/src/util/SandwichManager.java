@@ -115,10 +115,9 @@ public class SandwichManager {
         Runnable runToaster = new Runnable() {
             @Override
             public void run() {
-                // Get the next available toaster
-
                 // Toast breads
                 while (breadsMade < 2 * sandwichNeeded) {
+                    // Get the next available toaster
                     Toaster toaster = getToaster();
                     Bread bread = createBread(toaster);
                     toaster.startToasting(bread);
@@ -129,7 +128,8 @@ public class SandwichManager {
                                 cond_bread_full.await();
                             }
                             breadPool.enqueue(bread);
-                            Logger.write(toaster.getId() + " puts bread " + bread.getId());
+                            Logger.write(
+                                    toaster.getId() + " puts bread " + toaster.getBreadsToasted());
                             cond_bread_done.signal();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -141,7 +141,8 @@ public class SandwichManager {
             }
 
             private synchronized Bread createBread(Toaster toaster) {
-                return new Bread(breadsMade++, toaster.getId());
+                breadsMade++;
+                return new Bread(toaster.getBreadsToasted(), toaster.getId());
             }
         };
 
@@ -149,21 +150,22 @@ public class SandwichManager {
         Runnable runScrambler = new Runnable() {
             @Override
             public void run() {
-                // Get the next available egg scrambler
 
                 // Scramble eggs
                 while (eggsMade < sandwichNeeded) {
+                    // Get the next available egg scrambler
                     EggScrambler eggScrambler = getEggScrambler();
                     Egg egg = createEgg(eggScrambler);
+                    eggScrambler.startScrambling(egg);
                     try {
                         lock.lock();
-                        eggScrambler.startScrambling(egg);
                         if (egg.isScrambled()) {
                             while (eggPool.isFull()) {
                                 cond_egg_full.await();
                             }
                             eggPool.enqueue(egg);
-                            Logger.write(eggScrambler.getId() + " puts egg " + egg.getId());
+                            Logger.write(eggScrambler.getId() + " puts egg "
+                                    + eggScrambler.getEggsScrambled());
                             cond_egg_done.signal();
                         }
                     } catch (InterruptedException e) {
@@ -175,7 +177,8 @@ public class SandwichManager {
             }
 
             private synchronized Egg createEgg(EggScrambler eggScrambler) {
-                return new Egg(eggsMade++, eggScrambler.getId());
+                eggsMade++;
+                return new Egg(eggScrambler.getEggsScrambled(), eggScrambler.getId());
             }
         };
 
@@ -183,10 +186,9 @@ public class SandwichManager {
         Runnable runPacker = new Runnable() {
             @Override
             public void run() {
-                // Get the next available packer
-
                 // Pack sandwiches
                 while (sandwichesMade < sandwichNeeded) {
+                    // Get the next available packer
                     Packer packer = getPacker();
                     // Get the next available ingredients
                     waitBread();
@@ -196,10 +198,9 @@ public class SandwichManager {
                     waitBread();
                     Bread bottom = (Bread) breadPool.dequeue();
 
-                    // Pack the sandwich
                     try {
                         lock.lock();
-
+                        // Signal that the bread and egg pool is not full
                         cond_bread_full.signal();
                         cond_egg_full.signal();
                     } catch (Exception e) {
@@ -207,13 +208,16 @@ public class SandwichManager {
                     } finally {
                         lock.unlock();
                     }
+
+                    // Pack the sandwich
                     Sandwich sandwich = createSandwich(top, bottom, egg);
                     packer.startPacking(sandwich);
                     if (sandwich.isPacked()) {
-                        Logger.write(packer.getId() + " packs sandwich " + sandwich.getId()
-                                + " with bread " + top.getId() + " from " + top.getToaster()
-                                + " and egg " + egg.getId() + " from " + egg.getScrambler()
-                                + " and bread " + bottom.getId() + " from " + bottom.getToaster());
+                        Logger.write(packer.getId() + " packs sandwich "
+                                + packer.getSandwichPacked() + " with bread " + top.getId()
+                                + " from " + top.getToaster() + " and egg " + egg.getId() + " from "
+                                + egg.getScrambler() + " and bread " + bottom.getId() + " from "
+                                + bottom.getToaster());
                     }
                 }
             }
@@ -291,9 +295,11 @@ public class SandwichManager {
     }
 
     // Get the next available packer
-    private static Packer getPacker() {
+    private static synchronized Packer getPacker() {
         for (int i = 0; i < sandwichPackers; i++) {
             if (!packers[i].isPacking()) {
+                // Indicate that machine is being used
+                packers[i].updateStatus();
                 return packers[i];
             }
         }
@@ -301,9 +307,11 @@ public class SandwichManager {
     }
 
     // Get the next available egg scrambler
-    private static EggScrambler getEggScrambler() {
+    private static synchronized EggScrambler getEggScrambler() {
         for (int i = 0; i < eggMakers; i++) {
             if (!eggScramblers[i].isScrambling()) {
+                // Indicate that machine is being used
+                eggScramblers[i].updateStatus();
                 return eggScramblers[i];
             }
         }
@@ -311,9 +319,11 @@ public class SandwichManager {
     }
 
     // Get the next available toaster
-    private static Toaster getToaster() {
+    private static synchronized Toaster getToaster() {
         for (int i = 0; i < breadMakers; i++) {
             if (!toasters[i].isToasting()) {
+                // Indicate that machine is being used
+                toasters[i].updateStatus();
                 return toasters[i];
             }
         }
@@ -324,16 +334,18 @@ public class SandwichManager {
         Logger.write("");
         Logger.write("Summary:");
         for (int i = 0; i < breadMakers; i++) {
-            Logger.write("Toaster " + i + " made " + toasters[i].getBreadsToasted() + " breads");
+            Logger.write("Toaster " + toasters[i].getId() + " made "
+                    + toasters[i].getBreadsToasted() + " breads");
         }
 
         for (int i = 0; i < eggMakers; i++) {
-            Logger.write("Egg Scrambler " + i + " made " + eggScramblers[i].getEggsScrambled()
-                    + " eggs");
+            Logger.write("Egg Scrambler " + eggScramblers[i].getId() + " made "
+                    + eggScramblers[i].getEggsScrambled() + " eggs");
         }
 
         for (int i = 0; i < sandwichPackers; i++) {
-            Logger.write("Packer " + i + " made " + packers[i].getSandwichPacked() + " sandwiches");
+            Logger.write("Packer " + packers[i].getId() + " made " + packers[i].getSandwichPacked()
+                    + " sandwiches");
         }
     }
 }

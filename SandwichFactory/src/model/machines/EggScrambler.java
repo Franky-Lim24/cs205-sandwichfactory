@@ -6,7 +6,7 @@ public class EggScrambler {
     private volatile boolean isScrambling;
     private int scrambleTime;
     private volatile String id;
-    private volatile int eggsScrambled;
+    private volatile int eggsScrambled = 0;
 
     public void scramble() {
         try {
@@ -27,7 +27,6 @@ public class EggScrambler {
     }
 
     public boolean startScrambling(Egg egg) {
-        isScrambling = true;
         scramble();
         egg.setScrambled(true);
         isScrambling = false;
@@ -45,5 +44,9 @@ public class EggScrambler {
 
     public void increaseEgg() {
         this.eggsScrambled = eggsScrambled + 1;
+    }
+
+    public void updateStatus() {
+        isScrambling = true;
     }
 }

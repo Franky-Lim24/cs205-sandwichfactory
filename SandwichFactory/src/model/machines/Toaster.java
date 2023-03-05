@@ -6,7 +6,7 @@ public class Toaster {
     private volatile boolean isToasting;
     private int toastTime;
     private volatile String id;
-    private volatile int breadsToasted;
+    private volatile int breadsToasted = 0;
 
     public void toast() {
         try {
@@ -27,7 +27,6 @@ public class Toaster {
     }
 
     public boolean startToasting(Bread bread) {
-        isToasting = true;
         toast();
         bread.setToasted(true);
         isToasting = false;
@@ -45,5 +44,9 @@ public class Toaster {
 
     public void increaseBread() {
         this.breadsToasted = breadsToasted + 1;
+    }
+
+    public void updateStatus() {
+        isToasting = true;
     }
 }

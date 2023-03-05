@@ -6,7 +6,7 @@ public class Packer {
     private volatile boolean isPacking;
     private int packingTime;
     private volatile String id;
-    private volatile int sandwichPacked;
+    private volatile int sandwichPacked = 0;
 
     public void pack() {
         try {
@@ -27,7 +27,6 @@ public class Packer {
     }
 
     public boolean startPacking(Sandwich sandwich) {
-        isPacking = true;
         pack();
         sandwich.setPacked(true);
         increaseSandwich();
@@ -45,5 +44,9 @@ public class Packer {
 
     public void increaseSandwich() {
         this.sandwichPacked = sandwichPacked + 1;
+    }
+
+    public void updateStatus() {
+        isPacking = true;
     }
 }
