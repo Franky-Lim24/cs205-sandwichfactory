@@ -1,0 +1,61 @@
+sandwiches:10
+bread capacity:4
+egg capacity:4
+bread makers:3
+egg makers:3
+sandwich packers:3
+bread rate:3
+egg rate:5
+packing rate:4
+
+E0 puts egg 0
+E0 puts egg 3
+E0 puts egg 4
+E0 puts egg 5
+B0 puts bread 0
+B0 puts bread 1
+B0 puts bread 2
+E0 puts egg 6
+S0 packs sandwich 0 with bread 0 from B0 and egg 0 from E0 and bread 1 from B0
+E0 puts egg 7
+B0 puts bread 3
+B1 puts bread 4
+B2 puts bread 5
+E0 puts egg 1
+S0 packs sandwich 2 with bread 2 from B0 and egg 3 from E0 and bread 5 from B2
+S0 packs sandwich 1 with bread 3 from B0 and egg 4 from E0 and bread 4 from B1
+B2 puts bread 8
+B1 puts bread 7
+B0 puts bread 6
+E0 puts egg 8
+B0 puts bread 9
+B2 puts bread 11
+B1 puts bread 10
+E0 puts egg 9
+E0 puts egg 2
+S0 packs sandwich 3 with bread 8 from B2 and egg 5 from E0 and bread 7 from B1
+B2 puts bread 14
+B0 puts bread 12
+B1 puts bread 13
+S0 packs sandwich 4 with bread 6 from B0 and egg 6 from E0 and bread 9 from B0
+S0 packs sandwich 5 with bread 11 from B2 and egg 7 from E0 and bread 10 from B1
+B1 puts bread 16
+B2 puts bread 17
+B0 puts bread 15
+S0 packs sandwich 6 with bread 14 from B2 and egg 1 from E0 and bread 12 from B0
+B0 puts bread 18
+B1 puts bread 19
+S0 packs sandwich 7 with bread 13 from B1 and egg 8 from E0 and bread 16 from B1
+S0 packs sandwich 8 with bread 17 from B2 and egg 9 from E0 and bread 15 from B0
+S0 packs sandwich 9 with bread 18 from B0 and egg 2 from E0 and bread 19 from B1
+
+Summary:
+Toaster 0 made 7 breads
+Toaster 1 made 6 breads
+Toaster 2 made 5 breads
+Egg Scrambler 0 made 10 eggs
+Egg Scrambler 1 made 0 eggs
+Egg Scrambler 2 made 0 eggs
+Packer 0 made 9 sandwiches
+Packer 1 made 0 sandwiches
+Packer 2 made 0 sandwiches
