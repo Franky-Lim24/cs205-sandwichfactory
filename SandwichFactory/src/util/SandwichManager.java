@@ -128,8 +128,8 @@ public class SandwichManager {
                                 cond_bread_full.await();
                             }
                             breadPool.enqueue(bread);
-                            Logger.write(
-                                    toaster.getId() + " puts bread " + toaster.getBreadsToasted());
+                            Logger.write(toaster.getId() + " puts bread "
+                                    + (toaster.getBreadsToasted() - 1));
                             cond_bread_done.signal();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -165,7 +165,7 @@ public class SandwichManager {
                             }
                             eggPool.enqueue(egg);
                             Logger.write(eggScrambler.getId() + " puts egg "
-                                    + eggScrambler.getEggsScrambled());
+                                    + (eggScrambler.getEggsScrambled() - 1));
                             cond_egg_done.signal();
                         }
                     } catch (InterruptedException e) {
@@ -214,7 +214,7 @@ public class SandwichManager {
                     packer.startPacking(sandwich);
                     if (sandwich.isPacked()) {
                         Logger.write(packer.getId() + " packs sandwich "
-                                + packer.getSandwichPacked() + " with bread " + top.getId()
+                                + (packer.getSandwichPacked() - 1) + " with bread " + top.getId()
                                 + " from " + top.getToaster() + " and egg " + egg.getId() + " from "
                                 + egg.getScrambler() + " and bread " + bottom.getId() + " from "
                                 + bottom.getToaster());
