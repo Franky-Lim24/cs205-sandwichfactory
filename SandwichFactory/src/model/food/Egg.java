@@ -1,26 +1,25 @@
 package model.food;
 
 public class Egg {
-    private int id;
-    private boolean isScrambled;
-    private String scrambler;
+    private final int eggId;
+    private boolean isEggMade = false;
+    private final String scrambler;
 
-    public Egg(int id, String scrambler) {
-        this.id = id;
-        this.isScrambled = false;
+    public Egg(int eggId, String scrambler) {
+        this.eggId = eggId;
         this.scrambler = scrambler;
     }
 
-    public int getId() {
-        return id;
+    public int getEggId() {
+        return this.eggId;
     }
 
-    public boolean isScrambled() {
-        return isScrambled;
+    public boolean isEggMade() {
+        return this.isEggMade;
     }
 
-    public void setScrambled(boolean scrambled) {
-        isScrambled = scrambled;
+    public void setScrambled(boolean isEggMade) {
+        this.isEggMade = isEggMade;
     }
 
     public String getScrambler() {
